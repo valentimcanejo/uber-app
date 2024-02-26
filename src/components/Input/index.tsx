@@ -2,6 +2,7 @@ import clsx from "clsx";
 import { styled } from "nativewind";
 import { useState } from "react";
 import { HelperText, TextInput } from "react-native-paper";
+import { twMerge } from "tailwind-merge";
 
 const StyledInput = styled(TextInput);
 
@@ -13,16 +14,18 @@ interface InputProps {
   secureTextEntry?: boolean;
   messageError?: string;
   fullWidth?: boolean;
+  style?: any;
 }
 
 export default function Input({
-  label,
-  value,
-  error,
-  secureTextEntry,
-  onChange,
-  messageError,
-  fullWidth,
+  label = "",
+  value = "",
+  error = false,
+  secureTextEntry = false,
+  onChange = () => {},
+  messageError = "",
+  fullWidth = false,
+  style = {},
 }: InputProps) {
   const [secureMode, setSecureMode] = useState(secureTextEntry);
 
@@ -34,7 +37,10 @@ export default function Input({
         </HelperText>
       )}
       <StyledInput
-        className={clsx(`bg-gray-300`, { "w-full": fullWidth })}
+        style={style}
+        className={clsx(`bg-gray-300`, {
+          "w-full": fullWidth,
+        })}
         label={label}
         value={value}
         error={error}

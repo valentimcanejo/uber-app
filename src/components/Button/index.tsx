@@ -1,33 +1,34 @@
 import { Text, TouchableOpacity } from "react-native";
 import { styled } from "nativewind";
 import clsx from "clsx";
+import { twMerge } from "tailwind-merge";
 
 const StyledText = styled(Text);
 const StyledTouchableOpacity = styled(TouchableOpacity);
 
 interface ButtonProps {
   onPress: any;
-  title: string;
+  text: string;
   fullWidth?: boolean;
-  customClassname?: string;
+  style?: any;
 }
 
 export default function Button({
-  onPress,
-  title,
-  fullWidth,
-  customClassname = "",
+  onPress = () => {},
+  text = "",
+  fullWidth = false,
+  style = {},
 }: ButtonProps) {
   return (
     <StyledTouchableOpacity
-      className={clsx("bg-blue-400 px-4 py-2 rounded-lg", {
+      style={style}
+      className={clsx("bg-blue-700 px-4 py-2 rounded-lg", {
         "w-full": fullWidth,
-        [customClassname]: customClassname,
       })}
       onPress={onPress}
     >
-      <StyledText className="text-white text-center font-medium text-lg">
-        {title}
+      <StyledText className="text-lg font-medium text-center text-white">
+        {text || "Texto"}
       </StyledText>
     </StyledTouchableOpacity>
   );

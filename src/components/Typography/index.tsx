@@ -19,9 +19,11 @@ export function Typography({
   color,
   semiBold = false,
   customClassname = "",
+  ...rest
 }: TextProps) {
   return (
     <StyledText
+      {...rest}
       className={clsx("text-gray-900 dark:text-zinc-100", {
         "text-xs": size === "xs",
         "text-sm": size === "sm",
