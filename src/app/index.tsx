@@ -1,11 +1,8 @@
 import { View } from "react-native";
-import Button from "../components/Button";
+import Button from "../components/button";
 import { Link, useNavigation } from "expo-router";
+import Login from "./(tabs)/login";
 
 export default function Home() {
-  return (
-    <View className="items-center justify-center flex-1">
-      <Link href="/login">Fazer Login</Link>
-    </View>
-  );
+  return <Login />;
 }

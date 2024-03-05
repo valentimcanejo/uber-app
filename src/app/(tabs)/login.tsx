@@ -1,14 +1,17 @@
 import { View } from "react-native";
-import Input from "@/components/Input";
+import Input from "../../components/input";
 import { useState } from "react";
-import Button from "@/components/Button";
+import Button from "../../components/button";
+import { router } from "expo-router";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loginError, setLoginError] = useState(false);
 
-  const login = async () => {};
+  const login = async () => {
+    router.replace("/home");
+  };
 
   return (
     <View className="flex items-center justify-center flex-1 w-full px-4">
@@ -30,7 +33,7 @@ export default function Login() {
       <Button
         style={{ marginTop: 10 }}
         text="Login"
-        onPress={() => {}}
+        onPress={login}
         fullWidth
       />
     </View>
