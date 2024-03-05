@@ -8,10 +8,11 @@ export default function TabLayout() {
       <Tabs.Screen
         name="home"
         options={{
-          title: "Home",
+          title: "Início",
           tabBarIcon: ({ color }) => (
             <FontAwesome size={28} name="home" color={color} />
           ),
+          headerShown: false,
         }}
       />
       <Tabs.Screen
@@ -31,6 +32,14 @@ export default function TabLayout() {
             <FontAwesome size={28} name="cog" color={color} />
           ),
           headerShown: false,
+        }}
+      />
+      <Tabs.Screen
+        // Name of the route to hide.
+        name="corrida"
+        options={{
+          // This tab will no longer show up in the tab bar.
+          href: null,
         }}
       />
     </Tabs>

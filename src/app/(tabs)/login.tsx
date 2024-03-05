@@ -1,7 +1,7 @@
 import { View } from "react-native";
 import Input from "../../components/input";
 import { useState } from "react";
-import Button from "../../components/button";
+import { Button } from "../../components/button";
 import { router } from "expo-router";
 
 export default function Login() {
@@ -30,12 +30,9 @@ export default function Login() {
         label="Password"
         error={loginError}
       />
-      <Button
-        style={{ marginTop: 10 }}
-        text="Login"
-        onPress={login}
-        fullWidth
-      />
+      <Button fullWidth className="mt-4" onPress={login}>
+        <Button.Text>Login</Button.Text>
+      </Button>
     </View>
   );
 }

@@ -1,35 +1,43 @@
-import { Text, TouchableOpacity } from "react-native";
-import { styled } from "nativewind";
-import clsx from "clsx";
-import { twMerge } from "tailwind-merge";
+import { ReactNode } from "react";
+import { Text, TouchableOpacity, TouchableOpacityProps } from "react-native";
 
-const StyledText = styled(Text);
-const StyledTouchableOpacity = styled(TouchableOpacity);
-
-interface ButtonProps {
-  onPress: any;
-  text: string;
+type ButtonProps = TouchableOpacityProps & {
   fullWidth?: boolean;
-  style?: any;
-}
+  children: ReactNode;
+};
 
-export default function Button({
-  onPress = () => {},
-  text = "",
-  fullWidth = false,
-  style = {},
-}: ButtonProps) {
+type ButtonTextProps = {
+  children: ReactNode;
+};
+
+type ButtonIconProps = {
+  children: ReactNode;
+};
+
+function Button({ fullWidth, children, ...rest }: ButtonProps) {
+  const width = fullWidth ? "w-full" : "";
   return (
-    <StyledTouchableOpacity
-      style={style}
-      className={clsx("bg-blue-700 px-4 py-2 rounded-lg", {
-        "w-full": fullWidth,
-      })}
-      onPress={onPress}
+    <TouchableOpacity
+      className={`flex-row items-center justify-center h-12  bg-blue-400 rounded-md ${width}`}
+      activeOpacity={0.7}
+      {...rest}
     >
-      <StyledText className="text-lg font-medium text-center text-white">
-        {text || "Texto"}
-      </StyledText>
-    </StyledTouchableOpacity>
+      {children}
+    </TouchableOpacity>
   );
 }
+
+function ButtonText({ children }: ButtonTextProps) {
+  return (
+    <Text className="mx-4 text-base text-white font-heading">{children}</Text>
+  );
+}
+
+function ButtonIcon({ children }: ButtonIconProps) {
+  return children;
+}
+
+Button.Text = ButtonText;
+Button.Icon = ButtonIcon;
+
+export { Button };
