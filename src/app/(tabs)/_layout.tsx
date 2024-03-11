@@ -40,6 +40,7 @@ export default function TabLayout() {
         options={{
           // This tab will no longer show up in the tab bar.
           href: null,
+          headerShown: false,
         }}
       />
     </Tabs>
