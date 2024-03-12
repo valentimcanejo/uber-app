@@ -6,10 +6,14 @@ import {
   watchPositionAsync,
   LocationAccuracy,
   LocationSubscription,
+  LocationObjectCoords,
 } from "expo-location";
 import { getAddressLocation } from "../../utils/getAddressLocation";
 import { Loading } from "../../components/loading";
 import { LocationInfo } from "../../components/locationInfo";
+import { CarSimple } from "phosphor-react-native";
+import { Map } from "../../components/map";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 export default function Corrida() {
   const [enderecoDestino, setEnderecoDestino] = useState("");
@@ -18,6 +22,8 @@ export default function Corrida() {
   const [locationForegroundPermission, requestLocationForegroundPermission] =
     useForegroundPermissions();
   const [currentAddress, setCurrentAddress] = useState<string | null>(null);
+  const [currentCoords, setCurrentCoords] =
+    useState<LocationObjectCoords | null>(null);
 
   useEffect(() => {
     requestLocationForegroundPermission();
@@ -36,6 +42,7 @@ export default function Corrida() {
         timeInterval: 1000,
       },
       (location) => {
+        setCurrentCoords(location.coords);
         getAddressLocation(location.coords)
           .then((address) => {
             if (address) {
@@ -77,13 +84,17 @@ export default function Corrida() {
           fullWidth
           label="Endereço de destino"
         />
-        <ScrollView>
-          <View className="flex-1 p-5">
-            <View className="bg-gray-200"></View>
-          </View>
-        </ScrollView>
+        <KeyboardAwareScrollView extraHeight={100}>
+          <ScrollView>
+            {currentCoords && <Map coordinates={[currentCoords]} />}
+            <View className="flex-1 p-5">
+              <View className="bg-gray-200"></View>
+            </View>
+          </ScrollView>
+        </KeyboardAwareScrollView>
         {currentAddress && (
           <LocationInfo
+            icon={CarSimple}
             label="Localização atual"
             description={currentAddress}
           />
