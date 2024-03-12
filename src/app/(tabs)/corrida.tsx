@@ -1,8 +1,9 @@
-import { View, Text, ScrollView } from "react-native";
+import { View, Text, ScrollView, Alert } from "react-native";
 import InputEndereco from "../../components/input-endereco";
 import { useEffect, useState } from "react";
 import {
   useForegroundPermissions,
+  requestBackgroundPermissionsAsync,
   watchPositionAsync,
   LocationAccuracy,
   LocationSubscription,
@@ -14,6 +15,12 @@ import { LocationInfo } from "../../components/locationInfo";
 import { CarSimple } from "phosphor-react-native";
 import { Map } from "../../components/map";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { openSettings } from "expo-linking";
+import { Button } from "../../components/button";
+import {
+  startLocationTask,
+  stopLocationTask,
+} from "../../tasks/backgroundLocationTask";
 
 export default function Corrida() {
   const [enderecoDestino, setEnderecoDestino] = useState("");
@@ -24,6 +31,39 @@ export default function Corrida() {
   const [currentAddress, setCurrentAddress] = useState<string | null>(null);
   const [currentCoords, setCurrentCoords] =
     useState<LocationObjectCoords | null>(null);
+
+  async function pararCorrida() {
+    try {
+      await stopLocationTask();
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async function handleDepartureRegister() {
+    try {
+      if (!currentCoords?.latitude && !currentCoords?.longitude) {
+        return Alert.alert(
+          "Localização",
+          "Não foi possível obter a localização atual. Tente novamente."
+        );
+      }
+
+      const backgroundPermissions = await requestBackgroundPermissionsAsync();
+
+      if (!backgroundPermissions.granted) {
+        return Alert.alert(
+          "Localização",
+          'É necessário permitir que o App tenha acesso localização em segundo plano. Acesse as configurações do dispositivo e habilite "Permitir o tempo todo."',
+          [{ text: "Abrir configurações", onPress: openSettings }]
+        );
+      }
+      await startLocationTask();
+    } catch (error) {
+      console.log(error);
+      Alert.alert("Erro", "Não possível registrar a saída do veículo.");
+    }
+  }
 
   useEffect(() => {
     requestLocationForegroundPermission();
@@ -99,6 +139,9 @@ export default function Corrida() {
             description={currentAddress}
           />
         )}
+        <Button onPress={handleDepartureRegister}>
+          <Button.Text>Registrar saída</Button.Text>
+        </Button>
       </View>
     </View>
   );
