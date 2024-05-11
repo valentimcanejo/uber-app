@@ -21,9 +21,10 @@ import {
   startLocationTask,
   stopLocationTask,
 } from "../../tasks/backgroundLocationTask";
+import GooglePlacesInput from "../../components/googleAutocomplete";
+import { Point } from "react-native-google-places-autocomplete";
 
 export default function Corrida() {
-  const [enderecoDestino, setEnderecoDestino] = useState("");
   const [error, setError] = useState(false);
   const [isLoadingLocation, setIsLoadingLocation] = useState(true);
   const [locationForegroundPermission, requestLocationForegroundPermission] =
@@ -31,6 +32,13 @@ export default function Corrida() {
   const [currentAddress, setCurrentAddress] = useState<string | null>(null);
   const [currentCoords, setCurrentCoords] =
     useState<LocationObjectCoords | null>(null);
+
+  const [enderecoAtual, setEnderecoAtual] = useState<
+    (Point & { address: string }) | null
+  >(null);
+  const [enderecoDestino, setEnderecoDestino] = useState<
+    (Point & { address: string }) | null
+  >(null);
 
   async function pararCorrida() {
     try {
@@ -117,21 +125,54 @@ export default function Corrida() {
     <View className="mt-8 flex-2">
       <View className="p-4 ">
         <Text className="mb-4 text-2xl">Selecione o endereço:</Text>
-        <InputEndereco
+        {/* <InputEndereco
           onChange={setEnderecoDestino}
           value={enderecoDestino}
           error={error}
           fullWidth
           label="Endereço de destino"
+        /> */}
+        <GooglePlacesInput
+          placeholder="Endereço atual"
+          onChangeAddress={setEnderecoAtual}
+          value={enderecoAtual?.address}
+          // value={enderecoAtual?.}
         />
-        <KeyboardAwareScrollView extraHeight={100}>
-          <ScrollView>
-            {currentCoords && <Map coordinates={[currentCoords]} />}
-            <View className="flex-1 p-5">
-              <View className="bg-gray-200"></View>
-            </View>
-          </ScrollView>
-        </KeyboardAwareScrollView>
+        {enderecoAtual?.lat && enderecoAtual?.lng ? (
+          <GooglePlacesInput
+            placeholder="Endereço de destino"
+            onChangeAddress={setEnderecoDestino}
+            value={enderecoDestino?.address}
+          />
+        ) : null}
+
+        {enderecoAtual?.lat &&
+        enderecoAtual?.lng &&
+        enderecoDestino?.lat &&
+        enderecoDestino?.lng ? (
+          <KeyboardAwareScrollView extraHeight={100}>
+            <ScrollView>
+              {currentCoords && (
+                <Map
+                  coordinates={[
+                    {
+                      latitude: enderecoAtual?.lat,
+                      longitude: enderecoAtual?.lng,
+                    },
+                    {
+                      latitude: enderecoDestino?.lat,
+                      longitude: enderecoDestino?.lng,
+                    },
+                  ]}
+                />
+              )}
+              <View className="flex-1 p-5">
+                <View className="bg-gray-200"></View>
+              </View>
+            </ScrollView>
+          </KeyboardAwareScrollView>
+        ) : null}
+
         {currentAddress && (
           <LocationInfo
             icon={CarSimple}
