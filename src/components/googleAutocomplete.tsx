@@ -6,6 +6,8 @@ import {
   Point,
 } from "react-native-google-places-autocomplete";
 import Input from "./input";
+import { GoogleAddressProps } from "../types/GoogleTypes";
+import Geocoder from "react-native-geocoding";
 
 const VirtualizedScrollView = (props: any) => {
   return (
@@ -21,7 +23,7 @@ const VirtualizedScrollView = (props: any) => {
 };
 
 interface GooglePlacesInputProps {
-  onChangeAddress: (address: (Point & { address: string }) | null) => void;
+  onChangeAddress: (address: GoogleAddressProps | null) => void;
   placeholder?: string;
   value?: string;
 }
@@ -29,25 +31,26 @@ interface GooglePlacesInputProps {
 const GooglePlacesInput = ({
   onChangeAddress = () => {},
   placeholder = "Procurar",
-  value = "",
+  value,
 }: GooglePlacesInputProps) => {
   return (
     <VirtualizedScrollView keyboardShouldPersistTaps="handled">
       <GooglePlacesAutocomplete
         placeholder={placeholder}
-        textInputProps={{
-          value,
-        }}
-        onPress={(data, details = null) => {
-          console.log(details);
+        // textInputProps={{
+        //   value,
+        // }}
+        // GooglePlacesDetailsQuery={{
+        //   //  fields: "geometry,formatted_address",
 
+        // }}
+        onPress={async (data, details = null) => {
           if (!details?.geometry.location) return;
-          console.log(details?.formatted_address);
 
           onChangeAddress({
             ...details?.geometry.location,
             address: details?.formatted_address,
-          } as Point & { address: string });
+          });
         }}
         fetchDetails={true}
         query={{
@@ -73,7 +76,6 @@ const GooglePlacesInput = ({
             fontSize: 15,
             flex: 1,
             borderColor: "black",
-            borderWidth: 1,
           },
           poweredContainer: {
             justifyContent: "flex-end",

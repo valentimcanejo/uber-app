@@ -23,6 +23,13 @@ import {
 } from "../../tasks/backgroundLocationTask";
 import GooglePlacesInput from "../../components/googleAutocomplete";
 import { Point } from "react-native-google-places-autocomplete";
+import {
+  DadosMatrixProps,
+  GoogleAddressProps,
+  MatrixAPIError,
+  RespostaDadosMatrixProps,
+} from "../../types/GoogleTypes";
+import useMatrixAPI from "../../hooks/useMatrixAPI";
 
 export default function Corrida() {
   const [error, setError] = useState(false);
@@ -33,12 +40,16 @@ export default function Corrida() {
   const [currentCoords, setCurrentCoords] =
     useState<LocationObjectCoords | null>(null);
 
-  const [enderecoAtual, setEnderecoAtual] = useState<
-    (Point & { address: string }) | null
-  >(null);
-  const [enderecoDestino, setEnderecoDestino] = useState<
-    (Point & { address: string }) | null
-  >(null);
+  const [enderecoAtual, setEnderecoAtual] = useState<GoogleAddressProps | null>(
+    null
+  );
+  const [enderecoDestino, setEnderecoDestino] =
+    useState<GoogleAddressProps | null>(null);
+
+  const { getMatrixDistance } = useMatrixAPI();
+
+  const [dadosMatrix, setDadosMatrix] =
+    useState<RespostaDadosMatrixProps | null>(null);
 
   async function pararCorrida() {
     try {
@@ -121,6 +132,15 @@ export default function Corrida() {
     return <Loading />;
   }
 
+  const getDistance = async () => {
+    if (!enderecoAtual?.address || !enderecoDestino?.address) return;
+    const res = await getMatrixDistance(
+      enderecoAtual?.address,
+      enderecoDestino?.address
+    );
+    setDadosMatrix(res);
+  };
+
   return (
     <View className="mt-8 flex-2">
       <View className="p-4 ">
@@ -172,17 +192,46 @@ export default function Corrida() {
             </ScrollView>
           </KeyboardAwareScrollView>
         ) : null}
-
+        {/* 
         {currentAddress && (
           <LocationInfo
             icon={CarSimple}
             label="Localização atual"
             description={currentAddress}
           />
+        )} */}
+        {!dadosMatrix ? null : (
+          <View className="relative my-4">
+            <View className="flex-row items-center p-2 bg-gray-200 place-items-center">
+              <View className="w-2 h-2 mr-2 bg-black rounded-full"></View>
+              <Text>{enderecoAtual?.address}</Text>
+            </View>
+            <View
+              className="absolute z-20 h-12 bg-black top-7"
+              style={{
+                left: 11,
+                width: 2,
+              }}
+            ></View>
+            <View className="flex-row items-center p-2 bg-gray-200 place-items-center">
+              <View className="w-2 h-2 mr-2 bg-black rounded-full"></View>
+              <Text>{enderecoDestino?.address}</Text>
+            </View>
+
+            <Text className="">Distância: {dadosMatrix.distancia.km} km</Text>
+            <Text className="">Tempo: {dadosMatrix.tempo.minutos} minutos</Text>
+          </View>
         )}
-        <Button onPress={handleDepartureRegister}>
-          <Button.Text>Registrar saída</Button.Text>
-        </Button>
+        {enderecoAtual?.lat &&
+        enderecoAtual?.lng &&
+        enderecoDestino?.lat &&
+        enderecoDestino?.lng ? (
+          <View>
+            <Button onPress={getDistance}>
+              <Button.Text>Registrar saída</Button.Text>
+            </Button>
+          </View>
+        ) : null}
       </View>
     </View>
   );
