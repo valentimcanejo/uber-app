@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1008023479142",
+    "project_id": "delivery-app-43eb5",
+    "storage_bucket": "delivery-app-43eb5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1008023479142:android:7633717786e220de2f1ea7",
+        "android_client_info": {
+          "package_name": "com.valentimcanejo.uberapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDETbHO0fjN7DwNvTsj1cu3pxu-J0gaaTY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

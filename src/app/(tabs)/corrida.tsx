@@ -32,6 +32,8 @@ import {
 } from "../../types/GoogleTypes";
 import useMatrixAPI from "../../hooks/useMatrixAPI";
 import useGoogleAPI from "../../hooks/useGoogleAPI";
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "../../../backend/firebase/initFirebase";
 
 export default function Corrida() {
   const [error, setError] = useState(false);
@@ -57,6 +59,20 @@ export default function Corrida() {
   const [desenhoCaminho, setDesenhoCaminho] = useState<PolylineProps[] | null>(
     null
   );
+
+  const getTeste = async () => {
+    try {
+      const collectionRef = collection(db, "teste");
+      const doc = (await getDocs(collectionRef)).docs.map((doc) => doc.data());
+      console.log(doc);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getTeste();
+  }, []);
 
   async function pararCorrida() {
     try {
