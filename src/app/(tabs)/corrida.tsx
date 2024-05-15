@@ -27,9 +27,11 @@ import {
   DadosMatrixProps,
   GoogleAddressProps,
   MatrixAPIError,
+  PolylineProps,
   RespostaDadosMatrixProps,
 } from "../../types/GoogleTypes";
 import useMatrixAPI from "../../hooks/useMatrixAPI";
+import useGoogleAPI from "../../hooks/useGoogleAPI";
 
 export default function Corrida() {
   const [error, setError] = useState(false);
@@ -47,9 +49,14 @@ export default function Corrida() {
     useState<GoogleAddressProps | null>(null);
 
   const { getMatrixDistance } = useMatrixAPI();
+  const { getCaminhoCompleto } = useGoogleAPI();
 
   const [dadosMatrix, setDadosMatrix] =
     useState<RespostaDadosMatrixProps | null>(null);
+
+  const [desenhoCaminho, setDesenhoCaminho] = useState<PolylineProps[] | null>(
+    null
+  );
 
   async function pararCorrida() {
     try {
@@ -83,6 +90,11 @@ export default function Corrida() {
       Alert.alert("Erro", "Não possível registrar a saída do veículo.");
     }
   }
+
+  useEffect(() => {
+    if (!currentCoords || !enderecoDestino?.address) return;
+    salvarDadosCorrida();
+  }, [currentCoords, enderecoDestino]);
 
   useEffect(() => {
     requestLocationForegroundPermission();
@@ -132,33 +144,38 @@ export default function Corrida() {
     return <Loading />;
   }
 
-  const getDistance = async () => {
-    if (!enderecoAtual?.address || !enderecoDestino?.address) return;
-    const res = await getMatrixDistance(
-      enderecoAtual?.address,
-      enderecoDestino?.address
-    );
-    setDadosMatrix(res);
+  const salvarDadosCorrida = async () => {
+    try {
+      if (!enderecoDestino?.address || !currentAddress) return;
+      const distancia = await getMatrixDistance(
+        currentAddress,
+        enderecoDestino?.address
+      );
+
+      const caminho = await getCaminhoCompleto(
+        currentAddress,
+        enderecoDestino?.address
+      );
+
+      setDadosMatrix(distancia);
+      setDesenhoCaminho(caminho);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
     <View className="mt-8 flex-2">
       <View className="p-4 ">
         <Text className="mb-4 text-2xl">Selecione o endereço:</Text>
-        {/* <InputEndereco
-          onChange={setEnderecoDestino}
-          value={enderecoDestino}
-          error={error}
-          fullWidth
-          label="Endereço de destino"
-        /> */}
-        <GooglePlacesInput
+
+        {/* <GooglePlacesInput
           placeholder="Endereço atual"
           onChangeAddress={setEnderecoAtual}
           value={enderecoAtual?.address}
           // value={enderecoAtual?.}
-        />
-        {enderecoAtual?.lat && enderecoAtual?.lng ? (
+        /> */}
+        {currentCoords ? (
           <GooglePlacesInput
             placeholder="Endereço de destino"
             onChangeAddress={setEnderecoDestino}
@@ -166,48 +183,41 @@ export default function Corrida() {
           />
         ) : null}
 
-        {enderecoAtual?.lat &&
-        enderecoAtual?.lng &&
+        {currentCoords &&
         enderecoDestino?.lat &&
-        enderecoDestino?.lng ? (
+        enderecoDestino?.lng &&
+        desenhoCaminho ? (
           <KeyboardAwareScrollView extraHeight={100}>
             <ScrollView>
-              {currentCoords && (
-                <Map
-                  coordinates={[
-                    {
-                      latitude: enderecoAtual?.lat,
-                      longitude: enderecoAtual?.lng,
-                    },
-                    {
-                      latitude: enderecoDestino?.lat,
-                      longitude: enderecoDestino?.lng,
-                    },
-                  ]}
-                />
-              )}
+              <Map
+                coordinates={[
+                  {
+                    latitude: currentCoords?.latitude,
+                    longitude: currentCoords?.longitude,
+                  },
+                  ...desenhoCaminho,
+                  {
+                    latitude: enderecoDestino?.lat,
+                    longitude: enderecoDestino?.lng,
+                  },
+                ]}
+              />
+
               <View className="flex-1 p-5">
                 <View className="bg-gray-200"></View>
               </View>
             </ScrollView>
           </KeyboardAwareScrollView>
         ) : null}
-        {/* 
-        {currentAddress && (
-          <LocationInfo
-            icon={CarSimple}
-            label="Localização atual"
-            description={currentAddress}
-          />
-        )} */}
+
         {!dadosMatrix ? null : (
           <View className="relative my-4">
-            <View className="flex-row items-center p-2 bg-gray-200 place-items-center">
+            <View className="flex-row items-center p-2 mb-2 bg-gray-200 place-items-center">
               <View className="w-2 h-2 mr-2 bg-black rounded-full"></View>
-              <Text>{enderecoAtual?.address}</Text>
+              <Text>{currentAddress}</Text>
             </View>
             <View
-              className="absolute z-20 h-12 bg-black top-7"
+              className="absolute z-20 bg-black h-14 top-7"
               style={{
                 left: 11,
                 width: 2,
@@ -218,8 +228,12 @@ export default function Corrida() {
               <Text>{enderecoDestino?.address}</Text>
             </View>
 
-            <Text className="">Distância: {dadosMatrix.distancia.km} km</Text>
-            <Text className="">Tempo: {dadosMatrix.tempo.minutos} minutos</Text>
+            <Text className="mt-2">
+              Distância: {dadosMatrix.distancia.km} km
+            </Text>
+            <Text className="">
+              Tempo: {dadosMatrix.tempo.minutos.toFixed(2)} minutos
+            </Text>
           </View>
         )}
         {enderecoAtual?.lat &&
@@ -227,8 +241,8 @@ export default function Corrida() {
         enderecoDestino?.lat &&
         enderecoDestino?.lng ? (
           <View>
-            <Button onPress={getDistance}>
-              <Button.Text>Registrar saída</Button.Text>
+            <Button onPress={salvarDadosCorrida}>
+              <Button.Text>Começar corrida</Button.Text>
             </Button>
           </View>
         ) : null}

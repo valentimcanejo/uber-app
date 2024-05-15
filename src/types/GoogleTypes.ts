@@ -35,3 +35,8 @@ export interface RespostaDadosMatrixProps {
 export interface MatrixAPIError {
   error: string;
 }
+
+export interface PolylineProps {
+  latitude: number;
+  longitude: number;
+}
