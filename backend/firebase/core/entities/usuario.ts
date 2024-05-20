@@ -1,3 +1,4 @@
+import { Coordenada } from "./coordenada";
 import { Entidade } from "./entidade";
 
 export default class Usuario extends Entidade {
@@ -5,6 +6,8 @@ export default class Usuario extends Entidade {
     id: string,
     private _nome: string,
     private _cargo: string,
+    private _ultimoAcesso: Date,
+    private _ultimaCoordenada: Coordenada,
     ativo: boolean,
     criadoEm: Date,
     alteradoEm: Date
@@ -18,5 +21,13 @@ export default class Usuario extends Entidade {
 
   get cargo() {
     return this._cargo;
+  }
+
+  get ultimoAcesso() {
+    return this._ultimoAcesso;
+  }
+
+  get ultimaCoordenada() {
+    return this._ultimaCoordenada;
   }
 }

@@ -1,9 +1,9 @@
 export class Entidade {
   constructor(
-    private _id: string,
-    private _ativo: boolean,
-    private _criadoEm: Date,
-    private _alteradoEm: Date
+    private _id: string | null | undefined,
+    private _ativo: boolean | null | undefined,
+    private _criadoEm: Date | null | undefined,
+    private _alteradoEm: Date | null | undefined
   ) {}
 
   get id() {

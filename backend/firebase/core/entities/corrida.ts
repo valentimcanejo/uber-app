@@ -1,28 +1,19 @@
-export class Coordenadas {
-  constructor(private _latitude: number, private _longitude: number) {}
+import { Coordenada } from "./coordenada";
+import { Entidade } from "./entidade";
 
-  get latitude() {
-    return this._latitude;
-  }
-
-  get longitude() {
-    return this._longitude;
-  }
-}
-
-export default class Corrida {
+export default class Corrida extends Entidade {
   constructor(
-    private _id: string,
+    id: string,
     private _tempo: string,
     private _localizacaoInicial: string,
     private _localizacaoFinal: string,
-    private _coordenadas: Coordenadas[],
-    private _criadoEm: Date,
-    private _alteradoEm: Date
-  ) {}
-
-  get id() {
-    return this._id;
+    private _status: string,
+    private _coordenadas: Coordenada[],
+    ativo: boolean,
+    criadoEm: Date,
+    alteradoEm: Date
+  ) {
+    super(id, ativo, criadoEm, alteradoEm);
   }
 
   get tempo() {
@@ -37,15 +28,11 @@ export default class Corrida {
     return this._localizacaoFinal;
   }
 
+  get status() {
+    return this._status;
+  }
+
   get coordenadas() {
     return this._coordenadas;
-  }
-
-  get criadoEm() {
-    return this._criadoEm;
-  }
-
-  get alteradoEm() {
-    return this._alteradoEm;
   }
 }

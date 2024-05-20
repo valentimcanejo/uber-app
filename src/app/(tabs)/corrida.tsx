@@ -53,6 +53,7 @@ export default function Corrida() {
 
   const { getMatrixDistance } = useMatrixAPI();
   const { getCaminhoCompleto } = useGoogleAPI();
+
   const [dadosMatrix, setDadosMatrix] =
     useState<RespostaDadosMatrixProps | null>(null);
 
