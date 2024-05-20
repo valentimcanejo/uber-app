@@ -167,6 +167,8 @@ export default function Corrida() {
     }
   };
 
+  const comecarCorrida = async () => {};
+
   return (
     <View className="mt-8 flex-2">
       <View className="p-4 ">
@@ -239,8 +241,8 @@ export default function Corrida() {
             </Text>
           </View>
         )}
-        {enderecoAtual?.lat &&
-        enderecoAtual?.lng &&
+        {currentCoords?.latitude &&
+        currentCoords?.longitude &&
         enderecoDestino?.lat &&
         enderecoDestino?.lng ? (
           <View>

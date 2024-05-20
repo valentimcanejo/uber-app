@@ -1,5 +1,16 @@
+interface CoordenadaProps {
+  latitude: number;
+  longitude: number;
+}
+
 export class Coordenada {
-  constructor(private _latitude: number, private _longitude: number) {}
+  private _latitude: number;
+  private _longitude: number;
+
+  constructor(props: CoordenadaProps) {
+    this._latitude = props.latitude;
+    this._longitude = props.longitude;
+  }
 
   get latitude() {
     return this._latitude;
