@@ -11,39 +11,11 @@ import {
 } from "firebase/firestore";
 import { Corrida } from "../core/entities/corrida";
 import { db } from "../initFirebase";
-import { FirebaseCorridaMapper } from "../mappers/firebase-corrida-repository";
+import { FirebaseCorridaMapper } from "../mappers/firebase-corrida-mapper";
 import { DocumentNotFoundError } from "./errors/document-not-found-error";
 import CorridaRepository from "../../domain/application/repositories/corrida-repository";
 
 export class FirebaseCorridaRepository implements CorridaRepository {
-  private valorInicialCorrida: Corrida = new Corrida({
-    id: "",
-    codCorrida: "",
-    tempo: "",
-    localizacaoInicial: "",
-    localizacaoFinal: "",
-    status: "",
-    coordenadas: [],
-    ativo: true,
-    criadoEm: new Date(),
-    alteradoEm: new Date(),
-  });
-
-  private fillDefaults(data: Partial<Corrida>): Corrida {
-    return new Corrida({
-      id: data.id || "",
-      codCorrida: data.codCorrida || "",
-      tempo: data.tempo || "",
-      localizacaoInicial: data.localizacaoInicial || "",
-      localizacaoFinal: data.localizacaoFinal || "",
-      status: data.status || "",
-      coordenadas: data.coordenadas || [],
-      ativo: data.ativo !== undefined ? data.ativo : true,
-      criadoEm: data.criadoEm || new Date(),
-      alteradoEm: data.alteradoEm || new Date(),
-    });
-  }
-
   private conversor = {
     toFirestore(corrida: Corrida): DocumentData {
       return {
@@ -52,7 +24,10 @@ export class FirebaseCorridaRepository implements CorridaRepository {
         localizacaoInicial: corrida.localizacaoInicial,
         localizacaoFinal: corrida.localizacaoFinal,
         status: corrida.status,
-        coordenadas: corrida.coordenadas,
+        coordenadas: corrida.coordenadas.map((coordenada) => ({
+          latitude: coordenada.latitude,
+          longitude: coordenada.longitude,
+        })),
         ativo: corrida.ativo,
         criadoEm: corrida.criadoEm,
         alteradoEm: corrida.alteradoEm,
@@ -64,7 +39,7 @@ export class FirebaseCorridaRepository implements CorridaRepository {
     ): Corrida {
       const data = snapshot.data(options);
 
-      return new Corrida({
+      return Corrida.criar({
         id: snapshot.id,
         codCorrida: data.codCorrida,
         tempo: data.tempo,
@@ -91,9 +66,12 @@ export class FirebaseCorridaRepository implements CorridaRepository {
       if (!corridaDoc) throw new DocumentNotFoundError("corridas");
 
       onSnapshot(corridaDoc, (doc) => {
-        const data = doc.data() || this.valorInicialCorrida;
-        const filledData = this.fillDefaults(data);
-        callbackFunction(filledData);
+        const data = doc.data();
+
+        const objetoConvertido = FirebaseCorridaMapper.toDomain(data!);
+        console.log(objetoConvertido);
+
+        callbackFunction(objetoConvertido);
       });
 
       return;

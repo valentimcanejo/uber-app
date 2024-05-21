@@ -62,6 +62,6 @@ export async function stopLocationTask() {
       await stopLocationUpdatesAsync(BACKGROUND_TASK_NAME);
     }
   } catch (error) {
-    console.log();
+    console.log(error);
   }
 }

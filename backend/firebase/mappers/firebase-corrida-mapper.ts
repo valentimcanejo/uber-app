@@ -7,7 +7,7 @@ import { Corrida, CorridaProps } from "../core/entities/corrida";
 
 export class FirebaseCorridaMapper {
   static toDomain(corrida: DocumentData): Corrida {
-    return new Corrida({
+    return Corrida.criar({
       id: corrida.id,
       codCorrida: corrida.codCorrida,
       tempo: corrida.tempo,

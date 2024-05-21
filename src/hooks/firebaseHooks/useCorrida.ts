@@ -4,15 +4,18 @@ import { FirebaseCorridaRepository } from "../../../backend/firebase/repositorie
 export default function useCorrida() {
   const instanciaRepositorioCorrida = new FirebaseCorridaRepository();
 
-  async function comecarCorrida(
+  const registrarCorrida = async (corrida: Corrida) =>
+    await instanciaRepositorioCorrida.create(corrida);
+
+  const comecarCorrida = async (
     idCorrida: string,
     callbackFunction: (data: Corrida) => void
-  ): Promise<void> {
+  ) => {
     return await instanciaRepositorioCorrida.comecarCorrida(
       idCorrida,
       callbackFunction
     );
-  }
+  };
 
-  return { comecarCorrida };
+  return { comecarCorrida, registrarCorrida };
 }

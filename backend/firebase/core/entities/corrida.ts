@@ -1,7 +1,7 @@
 import { Coordenada } from "./coordenada";
 import { Entidade, EntidadeProps } from "./entidade";
 export interface CorridaProps extends EntidadeProps {
-  tempo: string;
+  tempo: number;
   codCorrida: string;
   localizacaoInicial: string;
   localizacaoFinal: string;
@@ -10,7 +10,7 @@ export interface CorridaProps extends EntidadeProps {
 }
 
 export class Corrida extends Entidade {
-  private _tempo: string;
+  private _tempo: number;
   private _codCorrida: string;
   private _localizacaoInicial: string;
   private _localizacaoFinal: string;
@@ -54,5 +54,24 @@ export class Corrida extends Entidade {
 
   get coordenadas() {
     return this._coordenadas;
+  }
+
+  static gerarCodCorrida(): string {
+    return Math.random().toString(36).substring(2, 15);
+  }
+
+  static criar(data: Partial<Corrida>): Corrida {
+    return new Corrida({
+      id: data.id || "",
+      codCorrida: data.codCorrida || this.gerarCodCorrida(),
+      tempo: data.tempo || 0,
+      localizacaoInicial: data.localizacaoInicial || "",
+      localizacaoFinal: data.localizacaoFinal || "",
+      status: data.status || "",
+      coordenadas: data?.coordenadas || [],
+      ativo: data.ativo !== undefined ? data.ativo : true,
+      criadoEm: data.criadoEm || new Date(),
+      alteradoEm: data.alteradoEm || new Date(),
+    });
   }
 }

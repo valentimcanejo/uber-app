@@ -1,5 +1,4 @@
 import { View, Text, ScrollView, Alert } from "react-native";
-import InputEndereco from "../../components/input-endereco";
 import { useEffect, useState } from "react";
 import {
   useForegroundPermissions,
@@ -11,8 +10,6 @@ import {
 } from "expo-location";
 import { getAddressLocation } from "../../utils/getAddressLocation";
 import { Loading } from "../../components/loading";
-import { LocationInfo } from "../../components/locationInfo";
-import { CarSimple } from "phosphor-react-native";
 import { Map } from "../../components/map";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { openSettings } from "expo-linking";
@@ -22,21 +19,16 @@ import {
   stopLocationTask,
 } from "../../tasks/backgroundLocationTask";
 import GooglePlacesInput from "../../components/googleAutocomplete";
-import { Point } from "react-native-google-places-autocomplete";
 import {
-  DadosMatrixProps,
   GoogleAddressProps,
-  MatrixAPIError,
   PolylineProps,
   RespostaDadosMatrixProps,
 } from "../../types/GoogleTypes";
 import useMatrixAPI from "../../hooks/useMatrixAPI";
 import useGoogleAPI from "../../hooks/useGoogleAPI";
-import { collection, getDocs } from "firebase/firestore";
-import { db } from "../../../backend/firebase/initFirebase";
-import Usuario from "../../../backend/firebase/core/entities/usuario";
 import useCorrida from "../../hooks/firebaseHooks/useCorrida";
 import { Corrida as ClasseCorrida } from "../../../backend/firebase/core/entities/corrida";
+import { Coordenada } from "../../../backend/firebase/core/entities/coordenada";
 
 export default function Corrida() {
   const [error, setError] = useState(false);
@@ -47,9 +39,6 @@ export default function Corrida() {
   const [currentCoords, setCurrentCoords] =
     useState<LocationObjectCoords | null>(null);
 
-  const [enderecoAtual, setEnderecoAtual] = useState<GoogleAddressProps | null>(
-    null
-  );
   const [enderecoDestino, setEnderecoDestino] =
     useState<GoogleAddressProps | null>(null);
 
@@ -65,7 +54,7 @@ export default function Corrida() {
 
   const [dadosCorrida, setDadosCorrida] = useState<ClasseCorrida | null>(null);
 
-  const { comecarCorrida } = useCorrida();
+  const { comecarCorrida, registrarCorrida } = useCorrida();
 
   async function pararCorrida() {
     try {
@@ -99,11 +88,34 @@ export default function Corrida() {
       Alert.alert("Erro", "Não possível registrar a saída do veículo.");
     }
   }
-  console.log(dadosCorrida);
 
-  useEffect(() => {
-    comecarCorrida("1CmQ9ToS8nOgteWlVyeT", setDadosCorrida);
-  }, []);
+  const iniciarCorrida = async () => {
+    try {
+      if (!currentAddress || !enderecoDestino?.address)
+        return Alert.alert("Erro", "Não foi possível iniciar a corrida.");
+
+      const novaCorrida = ClasseCorrida.criar({
+        localizacaoInicial: currentAddress,
+        status: "Iniciada",
+        coordenadas: [
+          new Coordenada({
+            latitude: currentCoords?.latitude!,
+            longitude: currentCoords?.longitude!,
+          }),
+        ],
+      });
+
+      const corridaCriada = await registrarCorrida(novaCorrida);
+
+      if (!corridaCriada?.id) {
+        return Alert.alert("Erro", "Não foi possível criar a corrida.");
+      }
+
+      comecarCorrida(corridaCriada?.id, setDadosCorrida);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
     if (!currentCoords || !enderecoDestino?.address) return;
@@ -255,7 +267,7 @@ export default function Corrida() {
         enderecoDestino?.lat &&
         enderecoDestino?.lng ? (
           <View>
-            <Button onPress={salvarDadosCorrida}>
+            <Button onPress={iniciarCorrida}>
               <Button.Text>Começar corrida</Button.Text>
             </Button>
           </View>
