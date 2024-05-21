@@ -35,6 +35,8 @@ import useGoogleAPI from "../../hooks/useGoogleAPI";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../../backend/firebase/initFirebase";
 import Usuario from "../../../backend/firebase/core/entities/usuario";
+import useCorrida from "../../hooks/firebaseHooks/useCorrida";
+import { Corrida as ClasseCorrida } from "../../../backend/firebase/core/entities/corrida";
 
 export default function Corrida() {
   const [error, setError] = useState(false);
@@ -60,6 +62,10 @@ export default function Corrida() {
   const [desenhoCaminho, setDesenhoCaminho] = useState<PolylineProps[] | null>(
     null
   );
+
+  const [dadosCorrida, setDadosCorrida] = useState<ClasseCorrida | null>(null);
+
+  const { comecarCorrida } = useCorrida();
 
   async function pararCorrida() {
     try {
@@ -93,6 +99,11 @@ export default function Corrida() {
       Alert.alert("Erro", "Não possível registrar a saída do veículo.");
     }
   }
+  console.log(dadosCorrida);
+
+  useEffect(() => {
+    comecarCorrida("1CmQ9ToS8nOgteWlVyeT", setDadosCorrida);
+  }, []);
 
   useEffect(() => {
     if (!currentCoords || !enderecoDestino?.address) return;
@@ -166,8 +177,6 @@ export default function Corrida() {
       console.log(error);
     }
   };
-
-  const comecarCorrida = async () => {};
 
   return (
     <View className="mt-8 flex-2">

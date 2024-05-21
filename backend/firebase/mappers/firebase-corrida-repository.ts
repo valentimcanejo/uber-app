@@ -3,7 +3,7 @@ import {
   QueryDocumentSnapshot,
   SnapshotOptions,
 } from "firebase/firestore";
-import Corrida, { CorridaProps } from "../core/entities/corrida";
+import { Corrida, CorridaProps } from "../core/entities/corrida";
 
 export class FirebaseCorridaMapper {
   static toDomain(corrida: DocumentData): Corrida {

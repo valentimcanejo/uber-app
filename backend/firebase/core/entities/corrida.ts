@@ -9,7 +9,7 @@ export interface CorridaProps extends EntidadeProps {
   coordenadas: Coordenada[];
 }
 
-export default class Corrida extends Entidade {
+export class Corrida extends Entidade {
   private _tempo: string;
   private _codCorrida: string;
   private _localizacaoInicial: string;

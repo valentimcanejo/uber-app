@@ -9,13 +9,41 @@ import {
   doc,
   onSnapshot,
 } from "firebase/firestore";
-import Corrida from "../core/entities/corrida";
+import { Corrida } from "../core/entities/corrida";
 import { db } from "../initFirebase";
 import { FirebaseCorridaMapper } from "../mappers/firebase-corrida-repository";
 import { DocumentNotFoundError } from "./errors/document-not-found-error";
 import CorridaRepository from "../../domain/application/repositories/corrida-repository";
 
 export class FirebaseCorridaRepository implements CorridaRepository {
+  private valorInicialCorrida: Corrida = new Corrida({
+    id: "",
+    codCorrida: "",
+    tempo: "",
+    localizacaoInicial: "",
+    localizacaoFinal: "",
+    status: "",
+    coordenadas: [],
+    ativo: true,
+    criadoEm: new Date(),
+    alteradoEm: new Date(),
+  });
+
+  private fillDefaults(data: Partial<Corrida>): Corrida {
+    return new Corrida({
+      id: data.id || "",
+      codCorrida: data.codCorrida || "",
+      tempo: data.tempo || "",
+      localizacaoInicial: data.localizacaoInicial || "",
+      localizacaoFinal: data.localizacaoFinal || "",
+      status: data.status || "",
+      coordenadas: data.coordenadas || [],
+      ativo: data.ativo !== undefined ? data.ativo : true,
+      criadoEm: data.criadoEm || new Date(),
+      alteradoEm: data.alteradoEm || new Date(),
+    });
+  }
+
   private conversor = {
     toFirestore(corrida: Corrida): DocumentData {
       return {
@@ -50,6 +78,30 @@ export class FirebaseCorridaRepository implements CorridaRepository {
       });
     },
   };
+
+  async comecarCorrida(
+    idCorrida: string,
+    callbackFunction: (data: Corrida) => void
+  ): Promise<void> {
+    try {
+      const corridaDoc = doc(db, "corridas", idCorrida).withConverter(
+        this.conversor
+      );
+
+      if (!corridaDoc) throw new DocumentNotFoundError("corridas");
+
+      onSnapshot(corridaDoc, (doc) => {
+        const data = doc.data() || this.valorInicialCorrida;
+        const filledData = this.fillDefaults(data);
+        callbackFunction(filledData);
+      });
+
+      return;
+    } catch (error) {
+      console.error(error);
+      return;
+    }
+  }
 
   async create(corrida: Corrida): Promise<Corrida | null> {
     try {
@@ -108,7 +160,7 @@ export class FirebaseCorridaRepository implements CorridaRepository {
 
   async findAll(
     callbackFunction: (data: Corrida[] | []) => void
-  ): Promise<Corrida[] | []> {
+  ): Promise<void> {
     try {
       onSnapshot(
         collection(db, "corridas").withConverter(this.conversor),
@@ -120,10 +172,10 @@ export class FirebaseCorridaRepository implements CorridaRepository {
           );
         }
       );
-      return [];
+      return;
     } catch (error) {
       console.error(error);
-      return [];
+      return;
     }
   }
 
