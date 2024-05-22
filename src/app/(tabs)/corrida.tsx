@@ -1,5 +1,5 @@
 import { View, Text, ScrollView, Alert } from "react-native";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   useForegroundPermissions,
   requestBackgroundPermissionsAsync,
@@ -29,6 +29,8 @@ import useGoogleAPI from "../../hooks/useGoogleAPI";
 import useCorrida from "../../hooks/firebaseHooks/useCorrida";
 import { Corrida as ClasseCorrida } from "../../../backend/firebase/core/entities/corrida";
 import { Coordenada } from "../../../backend/firebase/core/entities/coordenada";
+import { CorridaContext } from "../../context/CorridaContext";
+import { router } from "expo-router";
 
 export default function Corrida() {
   const [error, setError] = useState(false);
@@ -52,7 +54,7 @@ export default function Corrida() {
     null
   );
 
-  const [dadosCorrida, setDadosCorrida] = useState<ClasseCorrida | null>(null);
+  const { dadosCorrida, setDadosCorrida } = useContext(CorridaContext);
 
   const { comecarCorrida, registrarCorrida } = useCorrida();
 
@@ -112,6 +114,7 @@ export default function Corrida() {
       }
 
       comecarCorrida(corridaCriada?.id, setDadosCorrida);
+      router.replace("/corridaAtual");
     } catch (error) {
       console.log(error);
     }
@@ -262,6 +265,7 @@ export default function Corrida() {
             </Text>
           </View>
         )}
+
         {currentCoords?.latitude &&
         currentCoords?.longitude &&
         enderecoDestino?.lat &&

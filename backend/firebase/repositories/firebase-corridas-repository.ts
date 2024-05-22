@@ -69,7 +69,6 @@ export class FirebaseCorridaRepository implements CorridaRepository {
         const data = doc.data();
 
         const objetoConvertido = FirebaseCorridaMapper.toDomain(data!);
-        console.log(objetoConvertido);
 
         callbackFunction(objetoConvertido);
       });

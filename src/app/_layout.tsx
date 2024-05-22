@@ -8,6 +8,7 @@ import {
   Inter_700Bold,
 } from "@expo-google-fonts/inter";
 import { Loading } from "../components/loading";
+import CorridaProvider from "../context/CorridaContext";
 
 export default function Layout() {
   const [fontsLoaded] = useFonts({
@@ -23,7 +24,9 @@ export default function Layout() {
 
   return (
     <SafeAreaView className="flex-1">
-      <Slot />
+      <CorridaProvider>
+        <Slot />
+      </CorridaProvider>
     </SafeAreaView>
   );
 }
