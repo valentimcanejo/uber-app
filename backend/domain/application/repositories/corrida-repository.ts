@@ -11,4 +11,6 @@ export default interface CorridaRepository {
     callbackFunction: (data: Corrida) => void
   ): void;
   atualizarCoordenadas(idCorrida: string, coordenada: Coordenada): void;
+  finalizarCorrida(idCorrida: string): void;
+  existeCorridaAtiva(): Promise<string | null>;
 }

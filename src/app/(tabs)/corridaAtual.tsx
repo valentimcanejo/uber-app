@@ -1,7 +1,7 @@
 import { View, Text, ScrollView } from "react-native";
 import BottomNavigationBar from "../../components/bottomNavigationBar";
 import CardComponent from "../../components/card";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { CorridaContext } from "../../context/CorridaContext";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { Map } from "../../components/map";
@@ -10,28 +10,31 @@ import useCorrida from "../../hooks/firebaseHooks/useCorrida";
 import { Coordenada } from "../../../backend/firebase/core/entities/coordenada";
 import Constants from "expo-constants";
 import ScreenLayout from "../../components/screenLayout";
+import { Button } from "../../components/button";
 
 export default function CorridaAtual() {
   const { dadosCorrida, dadosMatrix, enderecoDestino, desenhoCaminho } =
     useContext(CorridaContext);
 
   const { currentCoords } = useUserLocation();
-  const { atualizarPosicao } = useCorrida();
-
-  console.log(dadosCorrida);
+  const { atualizarPosicao, finalizarCorrida } = useCorrida();
 
   const handleAtualizarPosicao = async () => {
     if (!currentCoords || !dadosCorrida) return;
 
-    if (dadosCorrida?.id) {
-      await atualizarPosicao(
-        dadosCorrida.id,
-        new Coordenada({
-          latitude: currentCoords.latitude,
-          longitude: currentCoords.longitude,
-        })
-      );
-    }
+    if (!dadosCorrida?.id) return;
+    await atualizarPosicao(
+      dadosCorrida.id,
+      new Coordenada({
+        latitude: currentCoords.latitude,
+        longitude: currentCoords.longitude,
+      })
+    );
+  };
+
+  const handleFinalizarCorrida = async () => {
+    if (!dadosCorrida?.id) return;
+    await finalizarCorrida(dadosCorrida.id);
   };
 
   useEffect(() => {
@@ -41,7 +44,6 @@ export default function CorridaAtual() {
   return (
     <ScreenLayout>
       <View className="p-4 ">
-        <Text className="mb-4 text-2xl">{dadosCorrida?.codCorrida}</Text>
         {dadosCorrida &&
         enderecoDestino?.lat &&
         enderecoDestino?.lng &&
@@ -75,6 +77,9 @@ export default function CorridaAtual() {
             </ScrollView>
           </KeyboardAwareScrollView>
         ) : null}
+        <Button onPress={handleFinalizarCorrida}>
+          <Button.Text>Finalizar corrida</Button.Text>
+        </Button>
       </View>
     </ScreenLayout>
   );

@@ -10,6 +10,8 @@ import {
   onSnapshot,
   updateDoc,
   arrayUnion,
+  query,
+  where,
 } from "firebase/firestore";
 import { Corrida } from "../core/entities/corrida";
 import { db } from "../initFirebase";
@@ -56,6 +58,22 @@ export class FirebaseCorridaRepository implements CorridaRepository {
       });
     },
   };
+
+  async existeCorridaAtiva(): Promise<string | null> {
+    try {
+      const corridasCollection = query(
+        collection(db, "corridas"),
+        where("status", "==", "Iniciada")
+      ).withConverter(this.conversor);
+
+      const corridasSnapshot = await getDocs(corridasCollection);
+
+      return corridasSnapshot?.docs[0]?.id;
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
+  }
 
   async atualizarCoordenadas(
     idCorrida: string,
@@ -105,6 +123,24 @@ export class FirebaseCorridaRepository implements CorridaRepository {
     } catch (error) {
       console.error(error);
       return;
+    }
+  }
+
+  async finalizarCorrida(idCorrida: string): Promise<void> {
+    try {
+      const corridaDoc = doc(db, "corridas", idCorrida).withConverter(
+        this.conversor
+      );
+
+      if (!corridaDoc) throw new DocumentNotFoundError("corridas");
+
+      await updateDoc(corridaDoc, {
+        status: "Finalizada",
+      });
+
+      return;
+    } catch (error) {
+      console.log(error);
     }
   }
 

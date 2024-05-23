@@ -24,5 +24,21 @@ export default function useCorrida() {
     );
   };
 
-  return { comecarCorrida, registrarCorrida, atualizarPosicao };
+  const finalizarCorrida = async (idCorrida: string) =>
+    await instanciaRepositorioCorrida.finalizarCorrida(idCorrida);
+
+  const existeCorridaAtiva = async () =>
+    await instanciaRepositorioCorrida.existeCorridaAtiva();
+
+  const findById = async (id: string) =>
+    instanciaRepositorioCorrida.findById(id);
+
+  return {
+    comecarCorrida,
+    registrarCorrida,
+    atualizarPosicao,
+    finalizarCorrida,
+    existeCorridaAtiva,
+    findById,
+  };
 }

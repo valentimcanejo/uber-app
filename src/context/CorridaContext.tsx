@@ -1,10 +1,13 @@
-import React, { createContext, useState, ReactNode } from "react";
+import React, { createContext, useState, ReactNode, useEffect } from "react";
 import { Corrida } from "../../backend/firebase/core/entities/corrida";
 import {
   GoogleAddressProps,
   PolylineProps,
   RespostaDadosMatrixProps,
 } from "../types/GoogleTypes";
+import useGoogleAPI from "../hooks/useGoogleAPI";
+import useMatrixAPI from "../hooks/useMatrixAPI";
+import { useUserLocation } from "../hooks/useUserLocation";
 
 interface CorridaContextType {
   dadosCorrida: Corrida | null;
@@ -15,6 +18,7 @@ interface CorridaContextType {
   setEnderecoDestino: (enderecoDestino: GoogleAddressProps | null) => void;
   desenhoCaminho: PolylineProps[] | null;
   setDesenhoCaminho: (desenhoCaminho: PolylineProps[] | null) => void;
+  salvarDadosCorrida: () => void;
 }
 
 export const CorridaContext = createContext<CorridaContextType>({
@@ -26,6 +30,7 @@ export const CorridaContext = createContext<CorridaContextType>({
   setEnderecoDestino: () => {},
   desenhoCaminho: null,
   setDesenhoCaminho: () => {},
+  salvarDadosCorrida: () => {},
 });
 
 interface CorridaProviderProps {
@@ -42,6 +47,38 @@ const CorridaProvider = ({ children }: CorridaProviderProps) => {
     null
   );
 
+  const {
+    currentAddress,
+    currentCoords,
+    isLoadingLocation,
+    locationForegroundPermission,
+  } = useUserLocation();
+
+  const { getMatrixDistance } = useMatrixAPI();
+  const { getCaminhoCompleto } = useGoogleAPI();
+
+  const salvarDadosCorrida = async () => {
+    try {
+      console.log(currentAddress);
+      console.log(enderecoDestino);
+      if (!enderecoDestino?.address || !currentAddress) return;
+      const distancia = await getMatrixDistance(
+        currentAddress,
+        enderecoDestino?.address
+      );
+
+      const caminho = await getCaminhoCompleto(
+        currentAddress,
+        enderecoDestino?.address
+      );
+
+      setDadosMatrix(distancia);
+      setDesenhoCaminho(caminho);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <CorridaContext.Provider
       value={{
@@ -53,6 +90,7 @@ const CorridaProvider = ({ children }: CorridaProviderProps) => {
         setEnderecoDestino,
         desenhoCaminho,
         setDesenhoCaminho,
+        salvarDadosCorrida,
       }}
     >
       {children}

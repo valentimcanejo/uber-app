@@ -11,11 +11,13 @@ import { getAddressLocation } from "../utils/getAddressLocation"; // Ajuste o ca
 import { openSettings } from "expo-linking";
 import { Alert } from "react-native";
 import useCorrida from "./firebaseHooks/useCorrida";
+import { LocalizacaoProps } from "../../backend/firebase/core/entities/corrida";
 
 export function useUserLocation() {
   const [locationForegroundPermission, requestLocationForegroundPermission] =
     useForegroundPermissions();
   const [currentAddress, setCurrentAddress] = useState<string | null>(null);
+
   const [currentCoords, setCurrentCoords] =
     useState<LocationObjectCoords | null>(null);
   const [isLoadingLocation, setIsLoadingLocation] = useState(true);

@@ -29,18 +29,13 @@ export default function Corrida() {
     locationForegroundPermission,
   } = useUserLocation();
 
-  const { getMatrixDistance } = useMatrixAPI();
-  const { getCaminhoCompleto } = useGoogleAPI();
-
   const {
-    dadosCorrida,
     setDadosCorrida,
     dadosMatrix,
-    setDadosMatrix,
     enderecoDestino,
     setEnderecoDestino,
     desenhoCaminho,
-    setDesenhoCaminho,
+    salvarDadosCorrida,
   } = useContext(CorridaContext);
 
   const { comecarCorrida, registrarCorrida } = useCorrida();
@@ -52,6 +47,11 @@ export default function Corrida() {
       console.log(error);
     }
   }
+
+  useEffect(() => {
+    if (!currentCoords || !enderecoDestino?.address) return;
+    salvarDadosCorrida();
+  }, [currentCoords, enderecoDestino]);
 
   async function handleDepartureRegister() {
     try {
@@ -84,7 +84,16 @@ export default function Corrida() {
         return Alert.alert("Erro", "Não foi possível iniciar a corrida.");
 
       const novaCorrida = ClasseCorrida.criar({
-        localizacaoInicial: currentAddress,
+        localizacaoInicial: {
+          endereco: currentAddress,
+          latitude: currentCoords?.latitude!,
+          longitude: currentCoords?.longitude!,
+        },
+        localizacaoFinal: {
+          endereco: enderecoDestino?.address!,
+          latitude: enderecoDestino?.lat!,
+          longitude: enderecoDestino?.lng!,
+        },
         status: "Iniciada",
         coordenadas: [
           new Coordenada({
@@ -107,11 +116,6 @@ export default function Corrida() {
     }
   };
 
-  useEffect(() => {
-    if (!currentCoords || !enderecoDestino?.address) return;
-    salvarDadosCorrida();
-  }, [currentCoords, enderecoDestino]);
-
   if (!locationForegroundPermission?.granted) {
     return (
       <View className="items-center justify-center flex-1">
@@ -123,26 +127,6 @@ export default function Corrida() {
   if (isLoadingLocation) {
     return <Loading />;
   }
-
-  const salvarDadosCorrida = async () => {
-    try {
-      if (!enderecoDestino?.address || !currentAddress) return;
-      const distancia = await getMatrixDistance(
-        currentAddress,
-        enderecoDestino?.address
-      );
-
-      const caminho = await getCaminhoCompleto(
-        currentAddress,
-        enderecoDestino?.address
-      );
-
-      setDadosMatrix(distancia);
-      setDesenhoCaminho(caminho);
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
   return (
     <ScreenLayout>

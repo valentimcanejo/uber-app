@@ -3,17 +3,23 @@ import { Entidade, EntidadeProps } from "./entidade";
 export interface CorridaProps extends EntidadeProps {
   tempo: number;
   codCorrida: string;
-  localizacaoInicial: string;
-  localizacaoFinal: string;
+  localizacaoInicial: LocalizacaoProps;
+  localizacaoFinal: LocalizacaoProps;
   status: string;
   coordenadas: Coordenada[];
+}
+
+export interface LocalizacaoProps {
+  latitude: number;
+  longitude: number;
+  endereco: string;
 }
 
 export class Corrida extends Entidade {
   private _tempo: number;
   private _codCorrida: string;
-  private _localizacaoInicial: string;
-  private _localizacaoFinal: string;
+  private _localizacaoInicial: LocalizacaoProps;
+  private _localizacaoFinal: LocalizacaoProps;
   private _status: string;
   private _coordenadas: Coordenada[];
 
@@ -65,8 +71,16 @@ export class Corrida extends Entidade {
       id: data.id || "",
       codCorrida: data.codCorrida || this.gerarCodCorrida(),
       tempo: data.tempo || 0,
-      localizacaoInicial: data.localizacaoInicial || "",
-      localizacaoFinal: data.localizacaoFinal || "",
+      localizacaoInicial: data.localizacaoInicial || {
+        latitude: 0,
+        longitude: 0,
+        endereco: "",
+      },
+      localizacaoFinal: data.localizacaoFinal || {
+        latitude: 0,
+        longitude: 0,
+        endereco: "",
+      },
       status: data.status || "",
       coordenadas: data?.coordenadas || [],
       ativo: data.ativo !== undefined ? data.ativo : true,
