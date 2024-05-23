@@ -43,6 +43,17 @@ export default function TabLayout() {
           headerShown: false,
         }}
       />
+      <Tabs.Screen
+        name="corridaAtual"
+        options={{
+          title: "Corrida Atual",
+          href: null,
+
+          tabBarIcon: ({ color }) => (
+            <FontAwesome size={28} name="home" color={color} />
+          ),
+        }}
+      />
     </Tabs>
   );
 }

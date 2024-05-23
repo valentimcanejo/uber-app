@@ -8,12 +8,15 @@ import {
   getDoc,
   doc,
   onSnapshot,
+  updateDoc,
+  arrayUnion,
 } from "firebase/firestore";
 import { Corrida } from "../core/entities/corrida";
 import { db } from "../initFirebase";
 import { FirebaseCorridaMapper } from "../mappers/firebase-corrida-mapper";
 import { DocumentNotFoundError } from "./errors/document-not-found-error";
 import CorridaRepository from "../../domain/application/repositories/corrida-repository";
+import { Coordenada } from "../core/entities/coordenada";
 
 export class FirebaseCorridaRepository implements CorridaRepository {
   private conversor = {
@@ -53,6 +56,31 @@ export class FirebaseCorridaRepository implements CorridaRepository {
       });
     },
   };
+
+  async atualizarCoordenadas(
+    idCorrida: string,
+    coordenada: Coordenada
+  ): Promise<void> {
+    try {
+      const corridaDoc = doc(db, "corridas", idCorrida).withConverter(
+        this.conversor
+      );
+
+      if (!corridaDoc) throw new DocumentNotFoundError("corridas");
+
+      await updateDoc(corridaDoc, {
+        coordenadas: arrayUnion({
+          latitude: coordenada.latitude,
+          longitude: coordenada.longitude,
+        }),
+      });
+
+      return;
+    } catch (error) {
+      console.log(error);
+      return;
+    }
+  }
 
   async comecarCorrida(
     idCorrida: string,

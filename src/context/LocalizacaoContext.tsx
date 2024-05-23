@@ -6,7 +6,7 @@ import {
   RespostaDadosMatrixProps,
 } from "../types/GoogleTypes";
 
-interface CorridaContextType {
+interface LocalizacaoContextType {
   dadosCorrida: Corrida | null;
   setDadosCorrida: (dadosCorrida: Corrida | null) => void;
   dadosMatrix: RespostaDadosMatrixProps | null;
@@ -17,7 +17,7 @@ interface CorridaContextType {
   setDesenhoCaminho: (desenhoCaminho: PolylineProps[] | null) => void;
 }
 
-export const CorridaContext = createContext<CorridaContextType>({
+export const LocalizacaoContext = createContext<LocalizacaoContextType>({
   dadosCorrida: null,
   setDadosCorrida: () => {},
   dadosMatrix: null,
@@ -43,7 +43,7 @@ const CorridaProvider = ({ children }: CorridaProviderProps) => {
   );
 
   return (
-    <CorridaContext.Provider
+    <LocalizacaoContext.Provider
       value={{
         dadosCorrida,
         setDadosCorrida,
@@ -56,7 +56,7 @@ const CorridaProvider = ({ children }: CorridaProviderProps) => {
       }}
     >
       {children}
-    </CorridaContext.Provider>
+    </LocalizacaoContext.Provider>
   );
 };
 

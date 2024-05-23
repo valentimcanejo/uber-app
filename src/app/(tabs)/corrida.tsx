@@ -1,14 +1,6 @@
 import { View, Text, ScrollView, Alert } from "react-native";
-import { useContext, useEffect, useState } from "react";
-import {
-  useForegroundPermissions,
-  requestBackgroundPermissionsAsync,
-  watchPositionAsync,
-  LocationAccuracy,
-  LocationSubscription,
-  LocationObjectCoords,
-} from "expo-location";
-import { getAddressLocation } from "../../utils/getAddressLocation";
+import { useContext, useEffect } from "react";
+import { requestBackgroundPermissionsAsync } from "expo-location";
 import { Loading } from "../../components/loading";
 import { Map } from "../../components/map";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
@@ -19,11 +11,6 @@ import {
   stopLocationTask,
 } from "../../tasks/backgroundLocationTask";
 import GooglePlacesInput from "../../components/googleAutocomplete";
-import {
-  GoogleAddressProps,
-  PolylineProps,
-  RespostaDadosMatrixProps,
-} from "../../types/GoogleTypes";
 import useMatrixAPI from "../../hooks/useMatrixAPI";
 import useGoogleAPI from "../../hooks/useGoogleAPI";
 import useCorrida from "../../hooks/firebaseHooks/useCorrida";
@@ -31,30 +18,29 @@ import { Corrida as ClasseCorrida } from "../../../backend/firebase/core/entitie
 import { Coordenada } from "../../../backend/firebase/core/entities/coordenada";
 import { CorridaContext } from "../../context/CorridaContext";
 import { router } from "expo-router";
+import { useUserLocation } from "../../hooks/useUserLocation";
 
 export default function Corrida() {
-  const [error, setError] = useState(false);
-  const [isLoadingLocation, setIsLoadingLocation] = useState(true);
-  const [locationForegroundPermission, requestLocationForegroundPermission] =
-    useForegroundPermissions();
-  const [currentAddress, setCurrentAddress] = useState<string | null>(null);
-  const [currentCoords, setCurrentCoords] =
-    useState<LocationObjectCoords | null>(null);
-
-  const [enderecoDestino, setEnderecoDestino] =
-    useState<GoogleAddressProps | null>(null);
+  const {
+    currentAddress,
+    currentCoords,
+    isLoadingLocation,
+    locationForegroundPermission,
+  } = useUserLocation();
 
   const { getMatrixDistance } = useMatrixAPI();
   const { getCaminhoCompleto } = useGoogleAPI();
 
-  const [dadosMatrix, setDadosMatrix] =
-    useState<RespostaDadosMatrixProps | null>(null);
-
-  const [desenhoCaminho, setDesenhoCaminho] = useState<PolylineProps[] | null>(
-    null
-  );
-
-  const { dadosCorrida, setDadosCorrida } = useContext(CorridaContext);
+  const {
+    dadosCorrida,
+    setDadosCorrida,
+    dadosMatrix,
+    setDadosMatrix,
+    enderecoDestino,
+    setEnderecoDestino,
+    desenhoCaminho,
+    setDesenhoCaminho,
+  } = useContext(CorridaContext);
 
   const { comecarCorrida, registrarCorrida } = useCorrida();
 
@@ -124,42 +110,6 @@ export default function Corrida() {
     if (!currentCoords || !enderecoDestino?.address) return;
     salvarDadosCorrida();
   }, [currentCoords, enderecoDestino]);
-
-  useEffect(() => {
-    requestLocationForegroundPermission();
-  }, []);
-
-  useEffect(() => {
-    if (!locationForegroundPermission?.granted) {
-      return;
-    }
-
-    let subscription: LocationSubscription;
-
-    watchPositionAsync(
-      {
-        accuracy: LocationAccuracy.High,
-        timeInterval: 1000,
-      },
-      (location) => {
-        setCurrentCoords(location.coords);
-        getAddressLocation(location.coords)
-          .then((address) => {
-            if (address) {
-              setCurrentAddress(address);
-            }
-          })
-          .catch((e) => console.log(e))
-          .finally(() => setIsLoadingLocation(false));
-      }
-    ).then((response) => (subscription = response));
-
-    return () => {
-      if (subscription) {
-        subscription.remove();
-      }
-    };
-  }, [locationForegroundPermission?.granted]);
 
   if (!locationForegroundPermission?.granted) {
     return (
