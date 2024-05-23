@@ -19,6 +19,7 @@ import { Coordenada } from "../../../backend/firebase/core/entities/coordenada";
 import { CorridaContext } from "../../context/CorridaContext";
 import { router } from "expo-router";
 import { useUserLocation } from "../../hooks/useUserLocation";
+import ScreenLayout from "../../components/screenLayout";
 
 export default function Corrida() {
   const {
@@ -144,7 +145,7 @@ export default function Corrida() {
   };
 
   return (
-    <View className="mt-8 flex-2">
+    <ScreenLayout>
       <View className="p-4 ">
         <Text className="mb-4 text-2xl">Selecione o endereço:</Text>
 
@@ -227,6 +228,6 @@ export default function Corrida() {
           </View>
         ) : null}
       </View>
-    </View>
+    </ScreenLayout>
   );
 }

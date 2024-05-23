@@ -10,10 +10,11 @@ import { IconBox } from "./iconBox";
 import { useRef } from "react";
 
 type Props = MapViewProps & {
+  height?: number;
   coordinates: LatLng[];
 };
 
-export function Map({ coordinates, ...rest }: Props) {
+export function Map({ coordinates, height, ...rest }: Props) {
   const lastCoordinate = coordinates[coordinates.length - 1];
   const mapRef = useRef<MapView>(null);
 
@@ -29,7 +30,7 @@ export function Map({ coordinates, ...rest }: Props) {
     <MapView
       ref={mapRef}
       provider={PROVIDER_GOOGLE}
-      style={{ width: "100%", height: 200 }}
+      style={{ width: "100%", height: height ?? 200 }}
       region={{
         latitude: lastCoordinate.latitude,
         longitude: lastCoordinate.longitude,

@@ -18,7 +18,7 @@ export function IconBox({ icon: Icon, size = "NORMAL" }: Props) {
     <View
       className={`items-center justify-center ${
         size === "NORMAL" ? "w-12 h-12" : "w-8 h-8"
-      } mr-4 bg-gray-500 rounded-lg`}
+      } mr-4 bg-gray-400 rounded-lg`}
     >
       <Icon size={iconSize} />
     </View>

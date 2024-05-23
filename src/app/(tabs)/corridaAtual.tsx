@@ -8,6 +8,8 @@ import { Map } from "../../components/map";
 import { useUserLocation } from "../../hooks/useUserLocation";
 import useCorrida from "../../hooks/firebaseHooks/useCorrida";
 import { Coordenada } from "../../../backend/firebase/core/entities/coordenada";
+import Constants from "expo-constants";
+import ScreenLayout from "../../components/screenLayout";
 
 export default function CorridaAtual() {
   const { dadosCorrida, dadosMatrix, enderecoDestino, desenhoCaminho } =
@@ -37,16 +39,17 @@ export default function CorridaAtual() {
   }, [currentCoords]);
 
   return (
-    <View className="mt-8 flex-2">
+    <ScreenLayout>
       <View className="p-4 ">
         <Text className="mb-4 text-2xl">{dadosCorrida?.codCorrida}</Text>
         {dadosCorrida &&
         enderecoDestino?.lat &&
         enderecoDestino?.lng &&
         desenhoCaminho ? (
-          <KeyboardAwareScrollView extraHeight={100}>
+          <KeyboardAwareScrollView extraHeight={500}>
             <ScrollView>
               <Map
+                height={500}
                 coordinates={[
                   {
                     latitude:
@@ -73,6 +76,6 @@ export default function CorridaAtual() {
           </KeyboardAwareScrollView>
         ) : null}
       </View>
-    </View>
+    </ScreenLayout>
   );
 }
