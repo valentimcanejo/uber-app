@@ -127,10 +127,12 @@ export default function Corrida() {
   if (isLoadingLocation) {
     return <Loading />;
   }
+  console.log(currentCoords);
+  console.log(enderecoDestino);
 
   return (
     <ScreenLayout>
-      <View className="p-4 ">
+      <View className="flex-1 p-4">
         <Text className="mb-4 text-2xl">Selecione o endereço:</Text>
 
         {/* <GooglePlacesInput
@@ -154,6 +156,7 @@ export default function Corrida() {
           <KeyboardAwareScrollView extraHeight={100}>
             <ScrollView>
               <Map
+                height={400}
                 coordinates={[
                   {
                     latitude: currentCoords?.latitude,

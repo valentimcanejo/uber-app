@@ -30,7 +30,7 @@ export function Map({ coordinates, height, ...rest }: Props) {
     <MapView
       ref={mapRef}
       provider={PROVIDER_GOOGLE}
-      style={{ width: "100%", height: height ?? 200 }}
+      style={{ width: "100%", height: height ?? 50 }}
       region={{
         latitude: lastCoordinate.latitude,
         longitude: lastCoordinate.longitude,

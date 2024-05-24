@@ -19,6 +19,7 @@ interface CorridaContextType {
   desenhoCaminho: PolylineProps[] | null;
   setDesenhoCaminho: (desenhoCaminho: PolylineProps[] | null) => void;
   salvarDadosCorrida: () => void;
+  limparDadosCorrida: () => void;
 }
 
 export const CorridaContext = createContext<CorridaContextType>({
@@ -31,6 +32,7 @@ export const CorridaContext = createContext<CorridaContextType>({
   desenhoCaminho: null,
   setDesenhoCaminho: () => {},
   salvarDadosCorrida: () => {},
+  limparDadosCorrida: () => {},
 });
 
 interface CorridaProviderProps {
@@ -79,6 +81,13 @@ const CorridaProvider = ({ children }: CorridaProviderProps) => {
     }
   };
 
+  const limparDadosCorrida = () => {
+    setDadosCorrida(null);
+    setDadosMatrix(null);
+    setEnderecoDestino(null);
+    setDesenhoCaminho(null);
+  };
+
   return (
     <CorridaContext.Provider
       value={{
@@ -91,6 +100,7 @@ const CorridaProvider = ({ children }: CorridaProviderProps) => {
         desenhoCaminho,
         setDesenhoCaminho,
         salvarDadosCorrida,
+        limparDadosCorrida,
       }}
     >
       {children}

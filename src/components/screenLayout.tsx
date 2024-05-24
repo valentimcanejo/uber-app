@@ -4,7 +4,7 @@ import { ReactNode } from "react";
 
 export default function ScreenLayout({ children }: { children: ReactNode }) {
   return (
-    <View style={{ marginTop: Constants.statusBarHeight }} className="flex-2">
+    <View style={{ marginTop: Constants.statusBarHeight }} className="flex-1">
       {children}
     </View>
   );

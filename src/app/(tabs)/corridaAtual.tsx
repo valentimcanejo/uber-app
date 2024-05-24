@@ -11,10 +11,16 @@ import { Coordenada } from "../../../backend/firebase/core/entities/coordenada";
 import Constants from "expo-constants";
 import ScreenLayout from "../../components/screenLayout";
 import { Button } from "../../components/button";
+import { router } from "expo-router";
 
 export default function CorridaAtual() {
-  const { dadosCorrida, dadosMatrix, enderecoDestino, desenhoCaminho } =
-    useContext(CorridaContext);
+  const {
+    dadosCorrida,
+    dadosMatrix,
+    enderecoDestino,
+    desenhoCaminho,
+    limparDadosCorrida,
+  } = useContext(CorridaContext);
 
   const { currentCoords } = useUserLocation();
   const { atualizarPosicao, finalizarCorrida } = useCorrida();
@@ -35,6 +41,8 @@ export default function CorridaAtual() {
   const handleFinalizarCorrida = async () => {
     if (!dadosCorrida?.id) return;
     await finalizarCorrida(dadosCorrida.id);
+    limparDadosCorrida();
+    router.push("/home");
   };
 
   useEffect(() => {

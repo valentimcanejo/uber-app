@@ -9,6 +9,7 @@ import { router } from "expo-router";
 import useMatrixAPI from "../../hooks/useMatrixAPI";
 import useGoogleAPI from "../../hooks/useGoogleAPI";
 import { useUserLocation } from "../../hooks/useUserLocation";
+import PopUpCorrida from "../../components/popUpCorrida";
 
 export default function Main() {
   const { existeCorridaAtiva, findById } = useCorrida();
@@ -17,6 +18,7 @@ export default function Main() {
     setEnderecoDestino,
     salvarDadosCorrida,
     enderecoDestino,
+    dadosCorrida,
   } = useContext(CorridaContext);
   const { currentAddress } = useUserLocation();
 
@@ -52,11 +54,12 @@ export default function Main() {
   }, []);
 
   return (
-    <View className="mt-8 flex-2">
+    <View className="relative flex-1">
       <View className="p-4 ">
         <Text className="mb-4 text-2xl">Últimas corridas:</Text>
         <CardComponent />
       </View>
+      {dadosCorrida && <PopUpCorrida />}
     </View>
   );
 }
