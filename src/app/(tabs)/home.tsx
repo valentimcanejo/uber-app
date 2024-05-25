@@ -1,13 +1,9 @@
 import { View, Text } from "react-native";
-import BottomNavigationBar from "../../components/bottomNavigationBar";
 import CardComponent from "../../components/card";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import useCorrida from "../../hooks/firebaseHooks/useCorrida";
-import { Corrida } from "../../../backend/firebase/core/entities/corrida";
 import { CorridaContext } from "../../context/CorridaContext";
 import { router } from "expo-router";
-import useMatrixAPI from "../../hooks/useMatrixAPI";
-import useGoogleAPI from "../../hooks/useGoogleAPI";
 import { useUserLocation } from "../../hooks/useUserLocation";
 import PopUpCorrida from "../../components/popUpCorrida";
 

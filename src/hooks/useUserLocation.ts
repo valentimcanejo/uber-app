@@ -10,8 +10,6 @@ import {
 import { getAddressLocation } from "../utils/getAddressLocation"; // Ajuste o caminho conforme necessário
 import { openSettings } from "expo-linking";
 import { Alert } from "react-native";
-import useCorrida from "./firebaseHooks/useCorrida";
-import { LocalizacaoProps } from "../../backend/firebase/core/entities/corrida";
 
 export function useUserLocation() {
   const [locationForegroundPermission, requestLocationForegroundPermission] =

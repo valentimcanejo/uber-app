@@ -1,4 +1,4 @@
-import { Slot, Stack, Tabs } from "expo-router";
+import { Slot } from "expo-router";
 import { SafeAreaView } from "react-native";
 import {
   useFonts,
@@ -9,7 +9,6 @@ import {
 } from "@expo-google-fonts/inter";
 import { Loading } from "../components/loading";
 import CorridaProvider from "../context/CorridaContext";
-import PopUpCorrida from "../components/popUpCorrida";
 
 export default function Layout() {
   const [fontsLoaded] = useFonts({

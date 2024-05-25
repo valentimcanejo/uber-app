@@ -1,9 +1,4 @@
-import {
-  DadosMatrixProps,
-  MatrixAPIError,
-  PolylineProps,
-  RespostaDadosMatrixProps,
-} from "../types/GoogleTypes";
+import { PolylineProps } from "../types/GoogleTypes";
 
 export default function useGoogleAPI() {
   const decodePolyline = (polyline: string) => {

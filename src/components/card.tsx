@@ -1,8 +1,6 @@
 import * as React from "react";
-import { Avatar, Card, Text } from "react-native-paper";
-import { Button } from "./button";
+import { Text } from "react-native-paper";
 import { Image, View } from "react-native";
-import { Link } from "expo-router";
 import { LinkButton } from "./link-button";
 
 const CardComponent = () => (

@@ -1,4 +1,4 @@
-import React, { createContext, useState, ReactNode, useEffect } from "react";
+import React, { createContext, useState, ReactNode } from "react";
 import { Corrida } from "../../backend/firebase/core/entities/corrida";
 import {
   GoogleAddressProps,
@@ -49,12 +49,7 @@ const CorridaProvider = ({ children }: CorridaProviderProps) => {
     null
   );
 
-  const {
-    currentAddress,
-    currentCoords,
-    isLoadingLocation,
-    locationForegroundPermission,
-  } = useUserLocation();
+  const { currentAddress } = useUserLocation();
 
   const { getMatrixDistance } = useMatrixAPI();
   const { getCaminhoCompleto } = useGoogleAPI();

@@ -1,13 +1,7 @@
-import { LocationObjectCoords } from "expo-location";
 import React from "react";
-import { FlatList, ScrollView, View } from "react-native";
-import {
-  GooglePlacesAutocomplete,
-  Point,
-} from "react-native-google-places-autocomplete";
-import Input from "./input";
+import { FlatList } from "react-native";
+import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import { GoogleAddressProps } from "../types/GoogleTypes";
-import Geocoder from "react-native-geocoding";
 
 const VirtualizedScrollView = (props: any) => {
   return (

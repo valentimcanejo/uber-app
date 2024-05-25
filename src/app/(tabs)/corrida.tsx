@@ -11,8 +11,6 @@ import {
   stopLocationTask,
 } from "../../tasks/backgroundLocationTask";
 import GooglePlacesInput from "../../components/googleAutocomplete";
-import useMatrixAPI from "../../hooks/useMatrixAPI";
-import useGoogleAPI from "../../hooks/useGoogleAPI";
 import useCorrida from "../../hooks/firebaseHooks/useCorrida";
 import { Corrida as ClasseCorrida } from "../../../backend/firebase/core/entities/corrida";
 import { Coordenada } from "../../../backend/firebase/core/entities/coordenada";

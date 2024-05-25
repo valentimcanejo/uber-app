@@ -2,8 +2,6 @@ import clsx from "clsx";
 import { styled } from "nativewind";
 import { useState } from "react";
 import { HelperText, TextInput } from "react-native-paper";
-import { twMerge } from "tailwind-merge";
-
 const StyledInput = styled(TextInput);
 
 interface InputProps {

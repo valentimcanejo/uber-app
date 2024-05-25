@@ -1,6 +1,4 @@
-import { useState } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { Modal, Portal, Button, PaperProvider } from "react-native-paper";
+import { Text, View } from "react-native";
 
 export default function MensagemCorridaFinalizada() {
   return (

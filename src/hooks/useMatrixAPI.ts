@@ -1,6 +1,5 @@
 import {
   DadosMatrixProps,
-  MatrixAPIError,
   RespostaDadosMatrixProps,
 } from "../types/GoogleTypes";
 

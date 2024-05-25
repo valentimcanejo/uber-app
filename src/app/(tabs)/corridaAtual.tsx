@@ -1,14 +1,11 @@
 import { View, Text, ScrollView } from "react-native";
-import BottomNavigationBar from "../../components/bottomNavigationBar";
-import CardComponent from "../../components/card";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import { CorridaContext } from "../../context/CorridaContext";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { Map } from "../../components/map";
 import { useUserLocation } from "../../hooks/useUserLocation";
 import useCorrida from "../../hooks/firebaseHooks/useCorrida";
 import { Coordenada } from "../../../backend/firebase/core/entities/coordenada";
-import Constants from "expo-constants";
 import ScreenLayout from "../../components/screenLayout";
 import { Button } from "../../components/button";
 import { router } from "expo-router";
